@@ -1,4 +1,5 @@
 using API.Helpers;
+using API.Middleware;
 using AutoMapper;
 using Core.Interfaces;
 using Infrastructure.Data;
@@ -36,11 +37,15 @@ namespace API
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-
+            //if (env.IsDevelopment())
+            //{
+            //    app.UseDeveloperExceptionPage();
+            //}
+            app.UseMiddleware<ExceptionMiddleware>();
+            // if a request comes into Aapi but we dont have an endpoint that match 
+            //that particular request then we are going to hit this bit of middleware and
+            // its going to redirect to ErrorController
+            app.UseStatusCodePagesWithReExecute("/errors/{0}");
             app.UseHttpsRedirection();
 
             app.UseRouting();
