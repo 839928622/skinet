@@ -5,10 +5,15 @@ namespace Core.Specifications
 {
    public class ProductsWithTypesAndBrandsSpecification : BaseSpecification<Product>
     {
-        public ProductsWithTypesAndBrandsSpecification()
+        public ProductsWithTypesAndBrandsSpecification(ProductSpecParam productParameter):base(x=>
+            (!productParameter.BrandId.HasValue || x.ProductBrandId == productParameter.BrandId) &&
+            (!productParameter.TypeId.HasValue || x.ProductTypeId == productParameter.TypeId)
+            )
         {
             AddInclude(x => x.ProductBrand);
             AddInclude(x => x.ProductType);
+            AddOrderBy(x => x.Name);
+            ApplyPaging(productParameter.PageSize *(productParameter.PageIndex -1),productParameter.PageSize );
         }
 
         public ProductsWithTypesAndBrandsSpecification(int id) : base(x => x.Id == id)

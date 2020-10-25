@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using API.Dtos;
 using API.Errors;
+using API.Helpers;
 using AutoMapper;
 using Core.Entities;
 using Core.Interfaces;
@@ -13,6 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
+
     [Route("api/[controller]")]
     [ApiController]
     public class ProductsController : BaseController
@@ -35,13 +35,20 @@ namespace API.Controllers
             _productTypeRepo = productTypeRepo;
             _mapper = mapper;
         }
-
-        [HttpGet("products")]
-        public async Task<ActionResult<List<ProductToReturnDto>>> GetProductsAsync()
+        /// <summary>
+        /// [FromQuery] tell api controller parse parameter from querystring
+        /// </summary>
+        /// <param name="productParameter"></param>
+        /// <returns></returns>
+        [HttpGet("products")] 
+        public async Task<ActionResult<Pagination<ProductToReturnDto>>> GetProductsAsync([FromQuery]ProductSpecParam productParameter)
         {
-            var products = await _productRepo.ListAsync(new ProductsWithTypesAndBrandsSpecification());
-
-         return   Ok(_mapper.Map<IReadOnlyList<Product>,IReadOnlyList<ProductToReturnDto>>(products));
+            var spec = new ProductsWithTypesAndBrandsSpecification(productParameter);
+            var countSpec = new ProductWithFiltersForCountSpecification(productParameter);
+            var products = await _productRepo.ListAsync(spec); // resource after paging
+            var totalItems = await _productRepo.CountAsync(countSpec);
+            var data = _mapper.Map<IReadOnlyList<Product>, IReadOnlyList<ProductToReturnDto>>(products);
+         return   Ok(new Pagination<ProductToReturnDto>(productParameter.PageIndex,productParameter.PageSize,totalItems,data));
         }
 
         [HttpGet("{id}")]

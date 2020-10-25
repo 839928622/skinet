@@ -12,5 +12,11 @@ namespace Core.Interfaces
 
       Task<T> GetEntityWithSpec(ISpecification<T> spec);
       Task<IReadOnlyList<T>> ListAsync(ISpecification<T> spec);
+        /// <summary>
+        /// get the number of all resources after apply any filter
+        /// </summary>
+        /// <param name="spec"></param>
+        /// <returns></returns>
+      Task<int> CountAsync(ISpecification<T> spec);
   }
 }
