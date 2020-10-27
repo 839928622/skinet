@@ -10,6 +10,6 @@ export class AppComponent implements OnInit{
   title = 'client';
   constructor(private http: HttpClient) {}
   ngOnInit(): void {
-    throw new Error('Method not implemented.');
+
   }
 }

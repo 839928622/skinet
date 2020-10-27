@@ -14,6 +14,6 @@ baseUrl: string = environment.apiUrl;
               ) { }
 
   getProducts(): Observable<IPagination<IProduct>> {
-    return this.httpClient.get<IPagination<IProduct>>(this.baseUrl + 'products');
+    return this.httpClient.get<IPagination<IProduct>>(this.baseUrl + 'products/products');
   }
 }
