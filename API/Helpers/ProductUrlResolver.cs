@@ -18,7 +18,8 @@ namespace API.Helpers
         {
             if (!string.IsNullOrEmpty(source.PictureUrl))
             {
-                return _configuration.GetSection("ApiUrl") + source.PictureUrl; // _configuration["ApiUrl"]
+                // same as _configuration.GetSection("ApiUrl").Value
+                return _configuration["ApiUrl"] + source.PictureUrl; // _configuration["ApiUrl"]
             }
 
             return null;
