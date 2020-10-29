@@ -7,6 +7,7 @@ import { IBrand } from '../shared/models/brand';
 import { IPagination } from '../shared/models/pagination';
 import { IProduct } from '../shared/models/product';
 import { delay, map } from 'rxjs/operators';
+import { ShopParams } from '../shared/models/shopParams';
 
 @Injectable({
   providedIn: 'root'
@@ -16,15 +17,17 @@ baseUrl: string = environment.apiUrl;
   constructor(private httpClient: HttpClient,
               ) { }
 
-  getProducts(brandId?: number, typeId?: number): Observable<IPagination<IProduct>> {
+  getProducts(shopParam: ShopParams): Observable<IPagination<IProduct>> {
     let params = new HttpParams();
-    if ( brandId) {
+    if ( shopParam.brandId) {
     // if branchId === 0 ,it return false
-      params = params.append('brandId', brandId.toString());
+      params = params.append('brandId', shopParam.brandId.toString());
     }
-    if ( typeId) {
-      params = params.append('typeId', typeId.toString());
+    if ( shopParam.typeId) {
+      params = params.append('typeId', shopParam.brandId.toString());
     }
+    params = params.append('pageIndex', shopParam.pageNumber.toString());
+    params = params.append('pageSize', shopParam.pageSize.toString());
     return this.httpClient.get<IPagination<IProduct>>(this.baseUrl + 'products/products', {observe: 'response', params})
     .pipe(delay(500), map(response => {
       return response.body;

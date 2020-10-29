@@ -12,7 +12,7 @@
                <!--[class.active]: if brand.id === this.brandIdSelected return true ,then active class will apply to current li element-->
             <li class="list-group-item " 
             *ngFor="let brand of brands"
-            [class.active] ="brand.id === this.brandIdSelected"
+            [class.active] ="brand.id === this.shopParams.brandId"
             [value] = "brand.id"
             (click)="onBrandSelected(brand.id)"
             >{{brand.name}}</li>
@@ -21,7 +21,7 @@
           <ul class="list-group my-3">
             <li class="list-group-item " 
             *ngFor="let productType of productTyps"
-            [class.active] ="productType.id === this.typeIdSelected"
+            [class.active] ="productType.id === this.shopParams.typeId"
             [value] = "productType.id"
             (click)="onTypeSelected(productType.id)"
             >{{productType.name}}</li>
@@ -30,9 +30,7 @@
         </section>
         <section class="col-9">
             <div class="d-flex justify-content-between align-items-center pb-2">
-                <header>
-                    <span>Showing <strong>10</strong> of <strong>89</strong> Results</span>
-                </header>
+              <app-paging-header [pageNumber]="this.shopParams.pageNumber" [pageSize] = "this.shopParams.pageSize" [totalCount] = "this.totalCount"></app-paging-header>
                 <div class="form-inline mt-2">
                     <input class="form-control mr-2" style="width: 300px;" placeholder="Search" type="text"/>
                     <button class="btn btn-outline-primary my-2 ">Search</button>
@@ -46,6 +44,19 @@
                 <app-product-item [product] = 'product'></app-product-item>
                 </div>
               </div>
+
+              <!--panination -->
+         
+           <div class="d-flex justify-content-center" *ngIf="this.totalCount > 0">
+              <app-pager
+              [pageSize] ="shopParams.pageSize"
+              [totalCount] = "totalCount"
+              (pageChanged) = "onPageChanged($event)"
+              ></app-pager>
+           </div>
+         
+               
+            
         </section>
         
     </div>
