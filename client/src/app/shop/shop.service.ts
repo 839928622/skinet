@@ -23,8 +23,8 @@ baseUrl: string = environment.apiUrl;
     // if branchId === 0 ,it return false
       params = params.append('brandId', shopParam.brandId.toString());
     }
-    if ( shopParam.typeId) {
-      params = params.append('typeId', shopParam.brandId.toString());
+    if ( shopParam.typeId > 0) {
+      params = params.append('typeId', shopParam.typeId.toString());
     }
     params = params.append('pageIndex', shopParam.pageNumber.toString());
     params = params.append('pageSize', shopParam.pageSize.toString());

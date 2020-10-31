@@ -71,9 +71,13 @@ sortOptions = [{name: 'Aplhabetical', value: 'name'}, {name: 'Price: Low to High
   }
 
   onPageChanged(event: any){
+    // mark: change totalCount   will trigger onPageChanged in pager
+    // if we dont add this if statement, change totalCount will cause two http request reach to API
     console.log('event', event);
-    this.shopParams.pageNumber = event.page;
-    this.getProducts();
+    if (this.shopParams.pageNumber !== event.page) {
+      this.shopParams.pageNumber = event.page;
+      this.getProducts();
+    }
   }
 
   onSearch() {
