@@ -44,4 +44,8 @@ baseUrl: string = environment.apiUrl;
   getPruductTypes(): Observable<IProductType[]> {
     return this.httpClient.get<IProductType[]>(this.baseUrl + 'products/types');
   }
+
+  getProduct(id: number): Observable<IProduct>{
+     return this.httpClient.get<IProduct>(this.baseUrl + 'products/' + id);
+  }
 }
