@@ -5,6 +5,7 @@ import { ProductItemComponent } from './product-item/product-item.component';
 import { SharedModule } from '../shared/shared.module';
 import { RouterModule } from '@angular/router';
 import { ProductDetailComponent } from './product-detail/product-detail.component';
+import { ShopRoutingModule } from './shop-routing.module';
 
 
 
@@ -13,8 +14,8 @@ import { ProductDetailComponent } from './product-detail/product-detail.componen
   imports: [
     CommonModule,
     SharedModule, // now we can use panination functionality
-    RouterModule
+    ShopRoutingModule
   ],
-  exports: [ShopComponent]
+  exports: []
 })
 export class ShopModule { }
