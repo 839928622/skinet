@@ -43,6 +43,8 @@ namespace API.Controllers
         [HttpGet("products")] 
         public async Task<ActionResult<Pagination<ProductToReturnDto>>> GetProductsAsync([FromQuery]ProductSpecParam productParameter)
         {
+
+            return BadRequest(new APiResponse(400));
             var spec = new ProductsWithTypesAndBrandsSpecification(productParameter);
             var countSpec = new ProductWithFiltersForCountSpecification(productParameter);
             var products = await _productRepo.ListAsync(spec); // resource after paging
