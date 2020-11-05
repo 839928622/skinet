@@ -1,6 +1,7 @@
 <div class="container">
     <div class="row">
         <section class="col-3">
+          <ng-container *ngIf="productTyps && brands">
             <h5 class="text-warning ml-3">Sort</h5>
             <select name="" id="" class="custom-select" (change)="onSortChange($event.target.value)">
                 <option *ngFor="let sort of sortOptions"
@@ -27,14 +28,15 @@
             >{{productType.name}}</li>
           
           </ul>
+        </ng-container>
         </section>
         <section class="col-9">
             <div class="d-flex justify-content-between align-items-center pb-2">
               <app-paging-header [pageNumber]="this.shopParams.pageNumber" [pageSize] = "this.shopParams.pageSize" [totalCount] = "this.totalCount"></app-paging-header>
-                <div class="form-inline mt-2">
+                <div class="form-inline mt-2" *ngIf="products">
                     <input (keyup.enter)="onSearch()" class="form-control mr-2" style="width: 300px;" placeholder="Search" type="text" #search/>
                     <button class="btn btn-outline-primary my-2 " (click)="onSearch()">Search</button>
-                    <button class="btn btn-outline-danger  ml-2 my-2" (click) ="onReset()">Reset</button>
+                    <button class="btn btn-outline-info  ml-2 my-2" (click) ="onReset()">Reset</button>
 
                 </div>
             </div>

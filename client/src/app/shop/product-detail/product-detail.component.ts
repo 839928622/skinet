@@ -12,7 +12,10 @@ import { ShopService } from '../shop.service';
 export class ProductDetailComponent implements OnInit {
 product: IProduct;
   constructor(private shopServive: ShopService, private activaRoute: ActivatedRoute,
-              private breadCrumbService: BreadcrumbService) { }
+              private breadCrumbService: BreadcrumbService) {
+                this.breadCrumbService.set('@prodectDetails', ' '); // must set to length >= 1 of string,if u set it to '',it won't work,
+                                                                    // at least at current version,it won't
+               }
 
   ngOnInit(): void {
     this.loadProduct();
