@@ -32,7 +32,7 @@ baseUrl: string = environment.apiUrl;
       params = params.append('search', shopParam.search);
     }
     return this.httpClient.get<IPagination<IProduct>>(this.baseUrl + 'products/products', {observe: 'response', params})
-    .pipe(delay(500), map(response => {
+    .pipe( map(response => {
       return response.body;
     }));
   }
