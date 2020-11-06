@@ -19,7 +19,7 @@ namespace API.Extensions
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
       
             services.AddAutoMapper(typeof(MappingProfiles));
-
+            services.AddScoped<IBasketRepository, BasketRepository>();
             // this configure must placed after services.AddControllers();
             services.Configure<ApiBehaviorOptions>(options =>
             {

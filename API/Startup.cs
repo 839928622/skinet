@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
+using StackExchange.Redis;
 
 namespace API
 {
@@ -29,6 +30,12 @@ namespace API
             services.AddDbContext<StoreContext>(options =>
             {
                 options.UseSqlite(_configuration.GetConnectionString("DefaultConnection"));
+            });
+            services.AddSingleton<IConnectionMultiplexer,ConnectionMultiplexer>(config =>
+            {
+                var configuration = ConfigurationOptions.Parse(_configuration
+                    .GetConnectionString("Redis"),true);
+                return ConnectionMultiplexer.Connect(configuration);
             });
             services.AddAutoMapper(typeof(MappingProfiles));
 
