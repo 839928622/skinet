@@ -4,7 +4,7 @@ export interface IBasket {
     items: IBasketItem[];
   }
 
-interface IBasketItem {
+export interface IBasketItem {
     id: number;
     productName: string;
     price: number;
@@ -16,6 +16,12 @@ interface IBasketItem {
 
 export class Basket implements IBasket {
     id = uuidv4();
-    items: IBasketItem[];
+    items: IBasketItem[] = []; // initial value like List<T> TList = New List<T>() or it will throw undefined
 
+  }
+
+export interface IBasketTotal {
+    shipping: number;
+    subTotal: number;
+    total: number;
   }

@@ -16,7 +16,12 @@ import { BreadcrumbModule } from 'xng-breadcrumb';
     CommonModule,
     RouterModule,
     BreadcrumbModule,
-    ToastrModule.forRoot({positionClass: 'toast-bottom-right', preventDuplicates: true}),
+    ToastrModule.forRoot({
+      positionClass: 'toast-bottom-right',
+       preventDuplicates: true,
+        autoDismiss: true,
+         progressBar: true,
+          progressAnimation: 'decreasing'}),
   ],
   exports: [
     NavBarComponent,
