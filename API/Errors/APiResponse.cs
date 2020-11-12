@@ -19,7 +19,7 @@ namespace API.Errors
             return statusCode switch
             {
                 400 => "you have made a bad request",
-                402 => "you are not authorized",
+                401 => "you are not authorized",
                 404 => "not found",
                 500 => "intenel server error",
                 _ => null

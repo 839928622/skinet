@@ -36,6 +36,7 @@ namespace API
             {
                 options.UseSqlite(_configuration.GetConnectionString("IdentityConnection"));
             });
+            
             services.AddSingleton<IConnectionMultiplexer,ConnectionMultiplexer>(config =>
             {
                 var configuration = ConfigurationOptions.Parse(_configuration
@@ -43,7 +44,7 @@ namespace API
                 return ConnectionMultiplexer.Connect(configuration);
             });
             services.AddAutoMapper(typeof(MappingProfiles));
-
+            services.AddIdentityServices();
             services.AddApplicationServices();
             services.AddSwaggerGen(options =>
             {
