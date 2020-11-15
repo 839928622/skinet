@@ -44,7 +44,7 @@ namespace API
                 return ConnectionMultiplexer.Connect(configuration);
             });
             services.AddAutoMapper(typeof(MappingProfiles));
-            services.AddIdentityServices();
+            services.AddIdentityServices(_configuration);
             services.AddApplicationServices();
             services.AddSwaggerGen(options =>
             {
@@ -77,6 +77,8 @@ namespace API
             app.UseRouting();
             app.UseStaticFiles(); // wwwroot
             app.UseCors("CorsPolicy");
+
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseSwagger();

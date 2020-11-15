@@ -7,6 +7,7 @@ using AutoMapper;
 using Core.Entities;
 using Core.Interfaces;
 using Core.Specifications;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -41,6 +42,7 @@ namespace API.Controllers
         /// <param name="productParameter"></param>
         /// <returns></returns>
         [HttpGet("products")] 
+        [Authorize]
         public async Task<ActionResult<Pagination<ProductToReturnDto>>> GetProductsAsync([FromQuery]ProductSpecParam productParameter)
         {
             var spec = new ProductsWithTypesAndBrandsSpecification(productParameter);

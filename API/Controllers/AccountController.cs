@@ -1,8 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Linq;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using API.Dtos;
 using API.Errors;
 using Core.Entities.Identity;
+using Core.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 
 namespace API.Controllers
@@ -11,11 +15,14 @@ namespace API.Controllers
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly ITokenService _tokenService;
 
-        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager
+        ,ITokenService tokenService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _tokenService = tokenService;
         }
 
         [HttpPost("login")]
@@ -30,7 +37,7 @@ namespace API.Controllers
             return new UserDto()
             {
                 Email = user.Email,
-                Token = "access token",
+                Token = _tokenService.CreateToken(user),
                 DisplayName = user.DisplayName,
             };
         }
@@ -53,8 +60,45 @@ namespace API.Controllers
             {
                 DisplayName = user.DisplayName,
                 Email = user.Email,
-                Token = "token"
+                Token = _tokenService.CreateToken(user)
             };
+        }
+
+        [HttpGet]
+        [Authorize]
+        public async Task<ActionResult<UserDto>> GetCurrentUser()
+        {
+            var email = HttpContext.User?.Claims?.FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value;
+            if (!string.IsNullOrEmpty(email)) return BadRequest(new APiResponse(400));
+
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null) return BadRequest(new APiResponse(400));
+
+            return new UserDto()
+            {
+                DisplayName = user.DisplayName,
+                Email = user.Email,
+                Token = _tokenService.CreateToken(user)
+            };
+
+
+        }
+
+        [HttpGet("emailExists")]
+        public async Task<ActionResult<bool>> CheckEmailExistsAsync([FromQuery] string email)
+        {
+            return await _userManager.FindByEmailAsync(email) != null;
+        }
+
+        
+        [HttpGet("address")]
+        [Authorize]
+        public async Task<ActionResult<Address>> GetUserAddress()
+        {
+            var email = HttpContext.User?.Claims?.FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value;
+            var user = await _userManager.FindByEmailAsync(email);
+
+            return user.Address;
         }
     }
 }
