@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using API.Dtos;
 using API.Errors;
+using API.Extensions;
+using AutoMapper;
 using Core.Entities.Identity;
 using Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -16,13 +18,15 @@ namespace API.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly ITokenService _tokenService;
+        private readonly IMapper _autoMapper;
 
         public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager
-        ,ITokenService tokenService)
+        ,ITokenService tokenService, IMapper autoMapper)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _tokenService = tokenService;
+            _autoMapper = autoMapper;
         }
 
         [HttpPost("login")]
@@ -68,10 +72,8 @@ namespace API.Controllers
         [Authorize]
         public async Task<ActionResult<UserDto>> GetCurrentUser()
         {
-            var email = HttpContext.User?.Claims?.FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value;
-            if (!string.IsNullOrEmpty(email)) return BadRequest(new APiResponse(400));
-
-            var user = await _userManager.FindByEmailAsync(email);
+            var user = await _userManager.FindUserByClaimsPrincipleWithAddressAsync(HttpContext.User);
+           
             if (user == null) return BadRequest(new APiResponse(400));
 
             return new UserDto()
@@ -93,12 +95,27 @@ namespace API.Controllers
         
         [HttpGet("address")]
         [Authorize]
-        public async Task<ActionResult<Address>> GetUserAddress()
-        {
-            var email = HttpContext.User?.Claims?.FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value;
-            var user = await _userManager.FindByEmailAsync(email);
+        public async Task<ActionResult<AddressDto>> GetUserAddress()
+        { 
+            var user = await _userManager.FindByEmailWithAddressAsync(HttpContext.User);
 
-            return user.Address;
+            return _autoMapper.Map<Address,AddressDto>(user.Address);
+        }
+
+        [HttpPut("address")]
+        [Authorize]
+        public async Task<ActionResult<AddressDto>> UpdateUserAddress(AddressDto addressDto)
+        {
+            var user = await _userManager.FindUserByClaimsPrincipleWithAddressAsync(HttpContext.User);
+
+            user.Address = _autoMapper.Map<AddressDto, Address>(addressDto);
+            var result = await _userManager.UpdateAsync(user);
+            if (result.Succeeded)
+            {
+                return Ok(addressDto);
+            }
+
+            return BadRequest(new APiResponse(400,"update user failed"));
         }
     }
 }
