@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
@@ -49,6 +50,11 @@ namespace API.Controllers
         [HttpPost("register")]
         public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
         {
+            if ( CheckEmailExistsAsync(registerDto.Email).Result.Value)
+            {
+                return new BadRequestObjectResult( new APiValidationErrorResponse()
+                    {Errors = new string[]{"Email address is already in use "}});
+            }
             var user = new ApplicationUser()
             {
                 DisplayName = registerDto.DisplayName,
