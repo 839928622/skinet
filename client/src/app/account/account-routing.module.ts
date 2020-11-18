@@ -1,13 +1,13 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
-import { BasketComponent } from './basket.component';
+import { LoginComponent } from './login/login.component';
+import { RegisterComponent } from './register/register.component';
 
 
 const routers: Routes = [
-  {path: '', component: BasketComponent}
-];
-
+  {path: 'login', component: LoginComponent},
+  {path: 'register', component: RegisterComponent} ];
 @NgModule({
   declarations: [],
   imports: [
@@ -16,4 +16,4 @@ const routers: Routes = [
   ],
   exports: [RouterModule]
 })
-export class BasketRoutingModule { }
+export class AccountRoutingModule { }
