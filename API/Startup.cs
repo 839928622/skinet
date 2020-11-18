@@ -1,9 +1,11 @@
+using System.Collections.Generic;
 using API.Extensions;
 using API.Helpers;
 using API.Middleware;
 using AutoMapper;
 using Infrastructure.Data;
 using Infrastructure.Identity;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -48,7 +50,26 @@ namespace API
             services.AddApplicationServices();
             services.AddSwaggerGen(options =>
             {
-                options.SwaggerDoc("v1", new OpenApiInfo() { Title = "Skinet API", Version = "V1" });
+                options.SwaggerDoc("v1", new OpenApiInfo() { Title = "Skinet API", Version = "v1" });
+                var securitySchema = new OpenApiSecurityScheme()
+                {
+                    Description = "JWT Auth Bearer Schema",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Scheme = JwtBearerDefaults.AuthenticationScheme,
+                    Type = SecuritySchemeType.Http,
+                    Reference = new OpenApiReference()
+                    {
+                        Type = ReferenceType.SecurityScheme,
+                        Id = JwtBearerDefaults.AuthenticationScheme,
+                    }
+                };
+                options.AddSecurityDefinition(JwtBearerDefaults.AuthenticationScheme, securitySchema);
+                var securityRequirement = new OpenApiSecurityRequirement()
+                {
+                    {securitySchema, new List<string>() {JwtBearerDefaults.AuthenticationScheme} }
+                };
+                options.AddSecurityRequirement(securityRequirement);
             });
 
             services.AddCors(options =>
