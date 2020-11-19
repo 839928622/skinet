@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
@@ -42,5 +42,22 @@ export class AccountService {
 
   checkEmailExists(email: string): Observable<boolean> {
     return this.httpClient.get<boolean>(this.baseUrl + 'account/emailexists?email=' + email);
+  }
+
+  loadCurrentUser(token: string) {
+    let headers = new HttpHeaders();
+    headers = headers.set('Authorization', `Bearer ${token}`);
+    return this.httpClient.get<IUser>(this.baseUrl + 'account', {headers}).pipe(
+      map((user: IUser) => {
+          if (user) {
+            localStorage.setItem('token', user.token);
+            this.currentUserSource.next(user);
+          }
+      })
+    );
+  }
+
+  getCurrentUserValue(): IUser {
+    return this.currentUserSource.value;
   }
 }
