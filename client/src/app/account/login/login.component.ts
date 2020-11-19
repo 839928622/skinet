@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { IUserLogin } from 'src/app/shared/models/userLogin';
 import { AccountService } from '../account.service';
 
@@ -11,7 +12,8 @@ import { AccountService } from '../account.service';
 export class LoginComponent implements OnInit {
  loginForm: FormGroup;
  user: IUserLogin;
-  constructor(private accountService: AccountService) { }
+  constructor(private accountService: AccountService,
+              private router: Router) { }
 
   ngOnInit(): void {
     this.createLoginForm();
@@ -27,6 +29,7 @@ export class LoginComponent implements OnInit {
   onLoginFormSubmit() {
     this.user =   Object.assign({}, this.loginForm.value);
     this.accountService.login(this.user.email, this.user.password).subscribe( () => {
+      this.router.navigateByUrl('/shop');
       console.log('login.components.ts', 'user logged in');
     }, error => {
       console.log(error);

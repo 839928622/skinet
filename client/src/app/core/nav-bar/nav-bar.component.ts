@@ -21,4 +21,8 @@ currentUser$: Observable<IUser>;
     this.currentUser$ = this.accountService.currentUser$;
   }
 
+  logout(): void {
+    this.accountService.logOut();
+  }
+
 }
