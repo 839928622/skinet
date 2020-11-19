@@ -42,7 +42,7 @@ namespace API.Controllers
         /// <param name="productParameter"></param>
         /// <returns></returns>
         [HttpGet("products")] 
-        [Authorize]
+       
         public async Task<ActionResult<Pagination<ProductToReturnDto>>> GetProductsAsync([FromQuery]ProductSpecParam productParameter)
         {
             var spec = new ProductsWithTypesAndBrandsSpecification(productParameter);
