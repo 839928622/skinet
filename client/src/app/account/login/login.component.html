@@ -8,13 +8,20 @@
         <div class="form-label-group">
           <input formControlName="email" type="email" id="inputEmail" class="form-control" placeholder="Email address" required="" autofocus="">
           <label for="inputEmail">Email address</label>
+          <ng-container *ngIf="loginForm.get('email').invalid && loginForm.get('email').touched">
+              <span  *ngIf="loginForm.get('email').getError('required')" class="text-danger">Email field is required</span>
+              <span *ngIf="loginForm.get('email').getError('pattern')" class="text-danger">Email is not valid</span>
+          </ng-container>
         </div>
       
         <div class="form-label-group">
           <input formControlName="password" type="password" id="inputPassword" class="form-control" placeholder="Password" required="">
           <label for="inputPassword">Password</label>
+          <ng-container *ngIf="loginForm.get('password').invalid && loginForm.get('password').touched">
+            <span *ngIf="loginForm.get('password').getError('required')" class="text-danger">Password field is required</span>
+          </ng-container>
         </div>
-        <button class="btn btn-lg btn-primary btn-block" type="submit">Login in</button>
+        <button [disabled]="loginForm.invalid" class="btn btn-lg btn-primary btn-block" type="submit">Login in</button>
         <p class="mt-5 mb-3 text-muted text-center"> 1.0.0 build-1312 </p>
       </form>
    </div>

@@ -21,18 +21,20 @@ export class LoginComponent implements OnInit {
 
   createLoginForm() {
     this.loginForm = new FormGroup({
-      email: new FormControl('', Validators.required),
-      password: new FormControl('', Validators.required)
+      email: new FormControl('', [Validators.required, Validators.pattern('^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$')]),
+      password: new FormControl('', [Validators.required])
     });
   }
 
   onLoginFormSubmit() {
-    this.user =   Object.assign({}, this.loginForm.value);
-    this.accountService.login(this.user.email, this.user.password).subscribe( () => {
-      this.router.navigateByUrl('/shop');
-      console.log('login.components.ts', 'user logged in');
-    }, error => {
-      console.log(error);
-    });
+    if (this.loginForm.valid) {
+      this.user =   Object.assign({}, this.loginForm.value);
+      this.accountService.login(this.user.email, this.user.password).subscribe( () => {
+        this.router.navigateByUrl('/shop');
+        console.log('login.components.ts', 'user logged in');
+      }, error => {
+        console.log(error);
+      });
+  }
   }
 }
