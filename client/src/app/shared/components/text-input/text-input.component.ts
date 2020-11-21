@@ -24,7 +24,7 @@ export class TextInputComponent implements OnInit, ControlValueAccessor {
     control.updateValueAndValidity();
   }
 
-  onChange(event: Event) {
+  onChange(event) {
 
   }
 
