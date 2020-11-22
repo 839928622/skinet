@@ -14,6 +14,7 @@ export class AuthGuard implements CanActivate {
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
     return this.accounService.currentUser$.pipe( // currentUser$ is ReplaySubject, if nothing held by currentUser$,
       // code block inside of pipe won't execute unitil currentUser$ has a value
+      // in Gurad,we dont need to subscribe it
       map(auth => {
         if (auth) {
           return true;
