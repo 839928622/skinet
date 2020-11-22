@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { IUserLogin } from 'src/app/shared/models/userLogin';
 import { AccountService } from '../account.service';
 
@@ -12,10 +12,13 @@ import { AccountService } from '../account.service';
 export class LoginComponent implements OnInit {
  loginForm: FormGroup;
  user: IUserLogin;
+ returnUrl: string;
   constructor(private accountService: AccountService,
-              private router: Router) { }
+              private router: Router,
+              private activateRoute: ActivatedRoute) { }
 
   ngOnInit(): void {
+    this.returnUrl = this.activateRoute.snapshot.queryParams.returnUrl || '/shop'; // if we dont have a returnUrl,then we redirect to shop
     this.createLoginForm();
   }
 
@@ -30,7 +33,7 @@ export class LoginComponent implements OnInit {
     if (this.loginForm.valid) {
       this.user =   Object.assign({}, this.loginForm.value);
       this.accountService.login(this.user.email, this.user.password).subscribe( () => {
-        this.router.navigateByUrl('/shop');
+        this.router.navigateByUrl(this.returnUrl);
         console.log('login.components.ts', 'user logged in');
       }, error => {
         console.log(error);

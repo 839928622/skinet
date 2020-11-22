@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, of, ReplaySubject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { IUser } from '../shared/models/user';
@@ -11,7 +11,7 @@ import { IUser } from '../shared/models/user';
 })
 export class AccountService {
  baseUrl: string = environment.apiUrl;
- private currentUserSource = new BehaviorSubject<IUser>(null);
+ private currentUserSource = new ReplaySubject<IUser>(1); // the job of BehaviorSubject is to immediately emit its initial value
  currentUser$ = this.currentUserSource.asObservable();
   constructor(private httpClient: HttpClient,
               private router: Router) { }
@@ -44,10 +44,15 @@ export class AccountService {
     return this.httpClient.get<boolean>(this.baseUrl + 'account/emailexists?email=' + email);
   }
 
-  loadCurrentUser(token: string) {
-    let headers = new HttpHeaders();
-    headers = headers.set('Authorization', `Bearer ${token}`);
-    return this.httpClient.get<IUser>(this.baseUrl + 'account', {headers}).pipe(
+  loadCurrentUser(token: string): Observable<void> {
+   if (token === null){
+     this.currentUserSource.next(null);
+     return of(null);
+   }
+
+   let headers = new HttpHeaders();
+   headers = headers.set('Authorization', `Bearer ${token}`);
+   return this.httpClient.get<IUser>(this.baseUrl + 'account', {headers}).pipe(
       map((user: IUser) => {
           if (user) {
             localStorage.setItem('token', user.token);
@@ -57,7 +62,7 @@ export class AccountService {
     );
   }
 
-  getCurrentUserValue(): IUser {
-    return this.currentUserSource.value;
-  }
+  // getCurrentUserValue(): IUser {
+  //   return this.currentUserSource.value;
+  // }
 }
