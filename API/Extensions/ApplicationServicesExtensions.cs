@@ -18,6 +18,7 @@ namespace API.Extensions
             services.AddScoped<IProductRepos, ProductRepository>();
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddScoped<IOrderService, OrderService>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddAutoMapper(typeof(MappingProfiles));
             services.AddScoped<IBasketRepository, BasketRepository>();
             // this configure must placed after services.AddControllers();
