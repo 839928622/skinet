@@ -1,8 +1,10 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Reflection;
 using Core.Entities;
 using Core.Entities.OrderAggregate;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Infrastructure.Data
 {
@@ -46,6 +48,12 @@ namespace Infrastructure.Data
                     foreach (var property in properties)
                     {
                         modelBuilder.Entity(entityType.Name).Property(property.Name).HasConversion<double>(); // cuz sqlite doesn't support double column type,if you orderby decimal,it will throw an error
+                    }
+                    // sqlite doesn't support DateTimeOffset
+                    var dateTimeProperties = entityType.ClrType.GetProperties().Where(p=> p.PropertyType == typeof(DateTimeOffset));
+                    foreach (var property in dateTimeProperties)
+                    {
+                        modelBuilder.Entity(entityType.Name).Property(property.Name).HasConversion(new DateTimeOffsetToBinaryConverter());
                     }
                 }
             }

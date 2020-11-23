@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using API.Dtos;
 using API.Errors;
@@ -33,6 +34,29 @@ namespace API.Controllers
             if (order == null) return BadRequest(new APiResponse(400, "Problem occurred during  creating order"));
 
             return Ok(order);
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<IReadOnlyList<OrderToReturnDto>>> GetOrderForUser()
+        {
+            var email = HttpContext.User.RetrieveEmailFromPrincipal();
+            var orders = await _orderService.GetOrdersForUserAsync(email);
+            return Ok(_autoMapper.Map<IReadOnlyList<Order>, IReadOnlyList<OrderToReturnDto>>(orders));
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<OrderToReturnDto>> GetOrderByIdForUser(int id)
+        {
+            var email = HttpContext.User.RetrieveEmailFromPrincipal();
+            var order = await _orderService.GetOrderByOrderIdAsync(id, email);
+            if (order == null) return NotFound(new APiResponse(400, "No Order found"));
+            return Ok(_autoMapper.Map<Order,OrderToReturnDto>(order));
+        }
+
+        [HttpGet("deliveryMethod")]
+        public async Task<ActionResult<IReadOnlyList<DeliveryMethod>>> GetDeliveryMethods()
+        {
+            return Ok(await _orderService.GetDeliveryMethodsAsync());
         }
     }
 }

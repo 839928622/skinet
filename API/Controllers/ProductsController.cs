@@ -18,19 +18,16 @@ namespace API.Controllers
     [ApiController]
     public class ProductsController : BaseController
     {
-        private readonly IProductRepos _productRepos;
         private readonly IGenericRepository<Product> _productRepo;
         private readonly IGenericRepository<ProductBrand> _productBrandRepo;
         private readonly IGenericRepository<ProductType> _productTypeRepo;
         private readonly IMapper _mapper;
 
-        public ProductsController(IProductRepos productRepos,
-            IGenericRepository<Product> productRepo,
+        public ProductsController(IGenericRepository<Product> productRepo,
             IGenericRepository<ProductBrand> productBrandRepo,
             IGenericRepository<ProductType> productTypeRepo,
             IMapper mapper)
         {
-            _productRepos = productRepos;
             _productRepo = productRepo;
             _productBrandRepo = productBrandRepo;
             _productTypeRepo = productTypeRepo;
