@@ -17,10 +17,10 @@ namespace Core.Entities.OrderAggregate
             decimal subtotal
             )
         {
+            OrderItems = orderItems;
             BuyerEmail = buyerEmail;
             ShipAddress = shipAddress;
             DeliveryMethod = deliveryMethod;
-            OrderItems = orderItems;
             Subtotal = subtotal;
            
         }

@@ -5,8 +5,8 @@ using Core.Interfaces;
 using Infrastructure.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.OpenApi.Models;
 using System.Linq;
+using Infrastructure.Services;
 
 namespace API.Extensions
 {
@@ -17,7 +17,7 @@ namespace API.Extensions
       
             services.AddScoped<IProductRepos, ProductRepository>();
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-      
+            services.AddScoped<IOrderService, OrderService>();
             services.AddAutoMapper(typeof(MappingProfiles));
             services.AddScoped<IBasketRepository, BasketRepository>();
             // this configure must placed after services.AddControllers();
