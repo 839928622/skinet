@@ -2,27 +2,27 @@
     <table class="table">
         <thead>
             <tr>
-                <th class="border-0 bg-light" scope="col">
+                <th class="border-0 " [class.bg-light]="isBasket" scope="col">
                     <div class="p-2 px-3 text-uppercase">
                         Product
                     </div>
                 </th>
-                <th class="border-0 bg-light" scope="col">
+                <th class="border-0 " [class.bg-light]="isBasket" scope="col">
                     <div class="p-2 px-3 text-uppercase">
                         Price
                     </div>
                 </th>
-                <th class="border-0 bg-light" scope="col">
+                <th class="border-0 " [class.bg-light]="isBasket" scope="col">
                     <div class="p-2 px-3 text-uppercase">
                         Quantity
                     </div>
                 </th>
-                <th class="border-0 bg-light" scope="col">
+                <th class="border-0 " [class.bg-light]="isBasket" scope="col">
                     <div class="p-2 px-3 text-uppercase">
                         Total
                     </div>
                 </th>
-                <th class="border-0 bg-light" scope="col">
+                <th *ngIf="isBasket" class="border-0 " [class.bg-light]="isBasket" scope="col">
                     <div class="p-2 px-3 text-uppercase">
                         Remove
                     </div>
@@ -49,18 +49,18 @@
 
                 <td class="align-middle"> <strong>{{ item.price | currency}}</strong></td>
                 <td class="align-middle"> 
-                    <div class="d-flex align-items-center">
-                        <i class="fa fa-minus-circle text-warning mr-2" style="cursor: pointer; font-size: 2em;" (click) ="decrementItemQuantity(item)"></i>
+                    <div class="d-flex justify-content-center" >
+                        <i *ngIf="isBasket" class="fa fa-minus-circle text-warning mx-2" style="cursor: pointer; font-size: 2em;" (click) ="decrementItemQuantity(item)"></i>
                         <span class="font-weight-bold">{{ item.quantity }}</span>
        
-                        <i class="fa fa-plus-circle text-warning mx-2" style="cursor: pointer; font-size: 2em;" (click) = "incrementItemQuantity(item)"></i>
+                        <i *ngIf="isBasket" class="fa fa-plus-circle text-warning mx-2" style="cursor: pointer; font-size: 2em;" (click) = "incrementItemQuantity(item)"></i>
                     </div>
                 </td>
 
                 <td class="align-middle"> <strong>{{ item.price * item.quantity | currency}}</strong></td>
                 <td class="align-middle text-center"> 
                     <a class="text-danger">
-                        <i class="fa fa-trash" style="font-size: 2em; cursor: pointer;" (click) = "removeBasketItem(item)"></i>
+                        <i *ngIf="isBasket" class="fa fa-trash" style="font-size: 2em; cursor: pointer;" (click) = "removeBasketItem(item)"></i>
                     </a>
                 </td>
             </tr>
