@@ -68,6 +68,6 @@ export class AccountService {
  }
 
  updateUserAddress(address: IAddress): Observable<IAddress> {
-   return this.httpClient.post<IAddress>(this.baseUrl + 'account/address', address);
+   return this.httpClient.put<IAddress>(this.baseUrl + 'account/address', address);
  }
 }
