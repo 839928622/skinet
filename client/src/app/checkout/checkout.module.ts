@@ -12,7 +12,9 @@ import { CheckoutAddressComponent } from './checkout-address/checkout-address.co
 
 
 @NgModule({
-  declarations: [CheckoutComponent, CheckoutDeliveryComponent, CheckoutReviewComponent, CheckoutPaymentComponent, CheckoutSucessComponent, CheckoutAddressComponent],
+  declarations: [CheckoutComponent, CheckoutDeliveryComponent,
+                 CheckoutReviewComponent, CheckoutPaymentComponent,
+                 CheckoutSucessComponent, CheckoutAddressComponent],
   imports: [
     CommonModule,
     CheckoutRoutingModule,
