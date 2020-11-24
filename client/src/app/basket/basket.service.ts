@@ -140,4 +140,10 @@ shippingPrice = 0;
     this.caculateTotals();
   }
 
+  clearnUpLocalBasket(basketId: string) {
+    this.basketSource.next(null);
+    this.basketTotalSource.next(null);
+    localStorage.removeItem('basket_id');
+  }
+
 }
