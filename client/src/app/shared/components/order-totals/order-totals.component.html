@@ -8,19 +8,19 @@
     <ul class="list-unstyled mb-4" *ngIf="(basketTotal$ | async) as basketTotal">
          <li class="d-flex justify-content-between py-3 border-bottom">
              <strong class="text-muted">Order subtotal</strong>
-             <strong class="text-muted">{{ basketTotal.subTotal | currency}}</strong>
+             <strong >{{ basketTotal.subTotal | currency}}</strong>
 
          </li>
 
          <li class="d-flex justify-content-between py-3 border-bottom">
             <strong class="text-muted">Shipping and handling</strong>
-            <strong class="text-muted">{{ basketTotal.shipping | currency }}</strong>
+            <strong >{{ basketTotal.shipping | currency }}</strong>
 
         </li>
 
         <li class="d-flex justify-content-between py-3 border-bottom">
             <strong class="text-muted">Total</strong>
-            <strong class="text-muted">{{ basketTotal.total | currency }}</strong>
+            <strong >{{ basketTotal.total | currency }}</strong>
         </li>
     </ul>
 </div>
