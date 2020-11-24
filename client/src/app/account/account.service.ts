@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, of, ReplaySubject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
+import { IAddress } from '../shared/models/address';
 import { IUser } from '../shared/models/user';
 
 @Injectable({
@@ -62,7 +63,11 @@ export class AccountService {
     );
   }
 
-  // getCurrentUserValue(): IUser {
-  //   return this.currentUserSource.value;
-  // }
+  getUserAddress(): Observable<IAddress>{
+   return this.httpClient.get<IAddress>(this.baseUrl + 'account/address');
+ }
+
+ updateUserAddress(address: IAddress): Observable<IAddress> {
+   return this.httpClient.post<IAddress>(this.baseUrl + 'account/address', address);
+ }
 }
