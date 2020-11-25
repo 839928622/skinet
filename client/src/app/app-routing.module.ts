@@ -16,6 +16,9 @@ const routes: Routes = [
   {path: 'checkout', canActivate: [AuthGuard], loadChildren: () => import('./checkout/checkout.module').then(mod => mod.CheckoutModule), data: { breadcrumb: 'checkout'}},
   // tslint:disable-next-line: max-line-length
   {path: 'account', loadChildren: () => import('./account/account.module').then(mod => mod.AccountModule), data: { breadcrumb: { skip: true }}},
+
+  // tslint:disable-next-line: max-line-length
+  {path: 'orders', canActivate: [AuthGuard], loadChildren: () => import('./order/order.module').then(mod => mod.OrderModule), data: { breadcrumb: 'orders'}},
   {path: '**', redirectTo: 'not-found', pathMatch: 'full'},
 
 ];
