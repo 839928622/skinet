@@ -25,6 +25,7 @@ shippingPrice = 0;
     return this.http.get<IBasket>(this.baseUrl + 'basket?id=' + id).pipe(
       map((basket: IBasket) => {
          this.basketSource.next(basket);
+         this.shippingPrice = basket.shippingPrice;
          this.caculateTotals();
       })
     );
@@ -137,13 +138,23 @@ shippingPrice = 0;
 
   setShippingPrice(deliveryMethod: IDeliveryMethod) {
     this.shippingPrice = deliveryMethod.price;
+    const basket = this.getCurrentBasketValue();
+    basket.deliveryMethodId = deliveryMethod.id;
+    basket.shippingPrice = deliveryMethod.price;
     this.caculateTotals();
+    this.setBasket(basket);
   }
 
   clearnUpLocalBasket(basketId: string) {
     this.basketSource.next(null);
     this.basketTotalSource.next(null);
     localStorage.removeItem('basket_id');
+  }
+
+  createPaymentIntent() {
+    return this.http.post(this.baseUrl + 'payment/' + this.getCurrentBasketValue().id, {}).pipe(map((basket: IBasket) => {
+     this.basketSource.next(basket);
+    }));
   }
 
 }

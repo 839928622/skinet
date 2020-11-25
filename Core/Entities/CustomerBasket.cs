@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Core.Entities
 {
@@ -26,6 +25,8 @@ namespace Core.Entities
         /// use it to update payment intent if user make change of delivery method / add or remove items in order
         /// </summary>
         public string PaymentIntentId { get; set; }
+
+        public Decimal ShippingPrice { get; set; }
 
     }
 }
