@@ -20,6 +20,12 @@ namespace Core.Entities
         public string Id { get; set; }
 
         public List<BasketItem> Items { get; set; } = new List<BasketItem>();
+        public int? DeliveryMethodId { get; set; }
+        public string ClientSecret { get; set; }
+        /// <summary>
+        /// use it to update payment intent if user make change of delivery method / add or remove items in order
+        /// </summary>
+        public string PaymentIntentId { get; set; }
 
     }
 }
