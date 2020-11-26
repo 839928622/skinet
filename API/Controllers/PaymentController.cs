@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using API.Dtos;
+using API.Errors;
 using AutoMapper;
-using Core.Entities;
 using Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -23,7 +23,10 @@ namespace API.Controllers
         [HttpPost("{basketId}")]
         public async Task<ActionResult<CustomerBasketDto>> CreateOrUpdatePaymentIntent(string basketId)
         {
-            return Ok(await _paymentService.CreateOrUpdatePaymentIntent(basketId));
+            var basket = await _paymentService.CreateOrUpdatePaymentIntent(basketId);
+            if (basket == null) return BadRequest(new APiResponse(400, "Problem with ur basket"));
+          
+            return Ok(basket);
         }
     }
 }
