@@ -15,6 +15,7 @@ export class StepperComponent extends CdkStepper implements OnInit {
   }
 
   onClick(index: number){
-    this.selectedIndex = index;
+    // this.selectedIndex = index;
+    // user can still click the stepper but nothing happend
   }
 }

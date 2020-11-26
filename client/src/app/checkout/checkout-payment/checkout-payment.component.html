@@ -21,5 +21,8 @@
 </div>
 <div class="float-none d-flex justify-content-between flex-column flex-lg-row mb-5">
     <button class="btn btn-outline-primary" cdkStepperPrevious><i class="fa fa-angle-left">Back to Review</i></button>
-    <button class="btn btn-outline-primary" (click)="submitOrder()" >Submit Order<i class="fa fa-angle-right"></i></button>
+    <button [disabled]="loading" class="btn btn-outline-primary" (click)="submitOrder()" >Submit Order
+        <i class="fa fa-angle-right"></i>
+        <i *ngIf="loading" class="fa fa-spinner fa-spin"></i>
+    </button>
 </div>

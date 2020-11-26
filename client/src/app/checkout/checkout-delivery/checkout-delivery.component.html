@@ -24,5 +24,5 @@
 
 <div class="float-none d-flex justify-content-between flex-column flex-lg-row mb-5">
     <button class="btn btn-outline-primary" cdkStepperPrevious><i class="fa fa-angle-left">Back to Address</i></button>
-    <button class="btn btn-outline-primary" cdkStepperNext>Go to Review<i class="fa fa-angle-right"></i></button>
+    <button [disabled]="checkoutForm.get('deliveryForm').invalid" class="btn btn-outline-primary" cdkStepperNext>Go to Review<i class="fa fa-angle-right"></i></button>
 </div>
