@@ -121,12 +121,12 @@ shippingPrice = 0;
       if (basket.items.length > 0) {
         this.setBasket(basket);
       }else {
-        this.deleteBasket(basket);
+        this.deleteLocalAndRemoteBasket(basket);
       }
     }
   }
 
-  deleteBasket(basket: IBasket) {
+  deleteLocalAndRemoteBasket(basket: IBasket) {
     return this.http.delete(this.baseUrl + 'basket?basketId=' + basket.id).subscribe( () => {
       this.basketSource.next(null);
       this.basketTotalSource.next(null);

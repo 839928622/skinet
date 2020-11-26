@@ -84,7 +84,7 @@ export class CheckoutPaymentComponent implements OnInit, AfterViewInit, OnDestro
       const createdOrder = await this.createOrder(basket);
       const paymentResult = await this.confirmPaymentWithStripe(basket);
       if (paymentResult.paymentIntent) {
-      this.basketService.clearnUpLocalBasket(basket.id);
+      this.basketService.deleteLocalAndRemoteBasket(basket);
       const navigationExtras: NavigationExtras = {state: createdOrder };
       this.router.navigate(['checkout/success'], navigationExtras);
      } else { // payment failed
