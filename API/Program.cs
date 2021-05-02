@@ -1,4 +1,5 @@
 using System;
+using System.Reflection;
 using System.ServiceProcess;
 using System.Threading.Tasks;
 using Core.Entities.Identity;
@@ -8,6 +9,7 @@ using Infrastructure.Identity;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -47,10 +49,21 @@ namespace API
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
+            Host.CreateDefaultBuilder(args).
+                ConfigureAppConfiguration((hostingContext, config) =>
+                {
+                    var env = hostingContext.HostingEnvironment;
+                    config.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                          .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true, reloadOnChange: true);
+                    config.AddEnvironmentVariables();
+                })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.UseStartup<Startup>();
+                    var assemblyName = typeof(Startup).GetTypeInfo().Assembly.FullName;
+
+                    // webBuilder.UseStartup<Startup>();
+                    webBuilder.UseStartup(assemblyName);
+                    
                 });
     }
 }
