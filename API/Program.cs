@@ -1,6 +1,5 @@
 using System;
 using System.Reflection;
-using System.ServiceProcess;
 using System.Threading.Tasks;
 using Core.Entities.Identity;
 using Infrastructure.Data;
