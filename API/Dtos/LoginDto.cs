@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace API.Dtos
 {
     public class LoginDto
     {
-        public string Email { get; set; }
-        public string Password { get; set; }
+        [Required(ErrorMessage = "Email address is required")]
+        public string Email { get; init; }
+        [Required(ErrorMessage = "Password address is required")]
+        public string Password { get; init; }
     }
 }
