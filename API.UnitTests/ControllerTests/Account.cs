@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 using API.Controllers;
 using API.Dtos;
 using AutoMapper;
@@ -14,18 +15,20 @@ using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 namespace API.UnitTests.ControllerTests
 {
     //https://softwareengineering.stackexchange.com/questions/7823/is-it-ok-to-have-multiple-asserts-in-a-single-unit-test
+    // model validation tests is gonna be practice on integration tests
     public class Account
     {
         private readonly Mock<UserManager<ApplicationUser>> _userManagerMock;
         private readonly Mock<SignInManager<ApplicationUser>> _signInManagerMock;
         private readonly Mock<ITokenService> _tokenServiceMock;
         private readonly Mock<IMapper> _autoMapperMock;
+        private readonly Mock<IUserStore<ApplicationUser>> _userStoreMock;
         public Account()
         {
             _autoMapperMock = new Mock <IMapper>();
             _tokenServiceMock = new Mock<ITokenService>();
-            var store = new Mock<IUserStore<ApplicationUser>>();
-            _userManagerMock = new Mock<UserManager<ApplicationUser>>(store.Object, null, null, null, null, null, null, null, null);
+            _userStoreMock = new Mock<IUserStore<ApplicationUser>>();
+            _userManagerMock = new Mock<UserManager<ApplicationUser>>(_userStoreMock.Object, null, null, null, null, null, null, null, null);
 
            // https://stackoverflow.com/questions/48189741/mocking-a-signinmanager
             _signInManagerMock = new Mock<SignInManager<ApplicationUser>>(_userManagerMock.Object, 
@@ -49,7 +52,7 @@ namespace API.UnitTests.ControllerTests
                 .ReturnsAsync(SignInResult.Success);
             _tokenServiceMock.Setup(x => x.CreateToken(It.IsAny<ApplicationUser>())).Returns(It.IsAny<string>());
             var controller = new AccountController(_userManagerMock.Object,_signInManagerMock.Object,_tokenServiceMock.Object,_autoMapperMock.Object);
-
+            
             // Act
             var result = await controller.Login(new LoginDto()
             {
@@ -110,5 +113,25 @@ namespace API.UnitTests.ControllerTests
             Assert.IsType<UnauthorizedObjectResult>(result.Result);
 
         }
+
+        [Fact]
+      public  async Task RegisterPost_ReturnBadRequest_WhenEmailAlreadyInUse()
+        {
+            //Arrange
+            var fakeRegisterDto = new RegisterDto()
+            {
+                Email = "a@b.com",
+            };
+            _userManagerMock.Setup(x => x.FindByEmailAsync(It.IsAny<string>())).ReturnsAsync(new ApplicationUser());
+            var controller = new AccountController(_userManagerMock.Object, _signInManagerMock.Object, _tokenServiceMock.Object, _autoMapperMock.Object);
+
+            //Act
+            var res = await controller.Register(fakeRegisterDto);
+            //Assert
+            Assert.IsType<BadRequestObjectResult>(res.Result);
+        }
+
+     
+
     }
 }

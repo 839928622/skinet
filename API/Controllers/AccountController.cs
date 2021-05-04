@@ -64,7 +64,7 @@ namespace API.Controllers
 
             var result = await _userManager.CreateAsync(user, registerDto.Password);
 
-            if (!result.Succeeded) return BadRequest(new APiResponse(400));
+            if (result == null || result.Succeeded == false) return BadRequest(new APiResponse(400));
 
             return new UserDto()
             {
