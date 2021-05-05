@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using API.UnitTests.Helper;
 using Core.Entities;
@@ -61,6 +62,25 @@ namespace API.UnitTests.ServiceTests
                 await orderService.CreateOrderAsync(buyerEmail, deliveryMethod.Id, It.IsAny<string>(), new Address());
             // Assert
             Assert.Equal(buyerEmail, result.BuyerEmail);
+        }
+
+        [Fact]
+        public async Task GetOrdersForUserAsync_ShouldReturnOrdersByBuyerEmail()
+        {
+            // Arrange
+            var order = new Order()
+            {
+                BuyerEmail = "buyerEmail@b.com",
+            };
+
+            await _storeContext.Orders.AddAsync(order);
+            await _storeContext.SaveChangesAsync();
+            var orderService = new OrderService(_basketRepoMock.Object, _paymentServiceMock.Object, _storeContext);
+
+            // act
+            var result= await orderService.GetOrdersForUserAsync(order.BuyerEmail);
+            //assert
+            Assert.Equal(order.BuyerEmail,result.FirstOrDefault()?.BuyerEmail);
         }
     }
 }
