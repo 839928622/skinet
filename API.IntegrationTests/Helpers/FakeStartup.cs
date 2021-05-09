@@ -1,13 +1,17 @@
 ﻿using System;
 using System.Text;
+using API.IntegrationTests.Extensions;
+using Core.Entities.Identity;
 using Core.Interfaces;
 using Infrastructure.Data;
+using Infrastructure.Identity;
 using Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -28,7 +32,7 @@ namespace API.IntegrationTests.Helpers
         {
             services.AddDbContext<StoreContext>(options =>
             {
-                options.UseSqlite(Configuration.GetConnectionString("DefaultConnection"));
+                options.UseSqlServer(Configuration.GetConnectionString("StoreConnection"));
             });
 
             //services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -38,23 +42,34 @@ namespace API.IntegrationTests.Helpers
             //                options.LoginPath = new PathString("/auth/login");
             //                options.AccessDeniedPath = new PathString("/auth/denied");
             //            });
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(options =>
-                {
-                    options.TokenValidationParameters = new TokenValidationParameters()
-                    {
-                        ValidateIssuerSigningKey = true, // if we leave this false , any user can send token they want 
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Token:key"])),
-                       // ValidIssuer = Configuration["Token:Issuer"], //because  we add Issuer  when we generate that token , we want to validate that 
-                        ValidateIssuer = false,
-                        ValidateAudience = false // token can have Issuer and Audience, Audience means who the token was issue to 
+            services.AddDbContext<AppIdentityDbContext>(options =>
+            {
+                options.UseSqlServer(Configuration.GetConnectionString("IdentityConnection"));
+            });
+            //var builder = services.AddIdentityCore<ApplicationUser>();
+            //builder = new IdentityBuilder(builder.UserType, builder.Services);
+            //builder.AddEntityFrameworkStores<AppIdentityDbContext>();
+            //builder.AddSignInManager<SignInManager<ApplicationUser>>();
 
-                    };
-                });
+            //services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            //    .AddJwtBearer(options =>
+            //    {
+            //        options.TokenValidationParameters = new TokenValidationParameters()
+            //        {
+            //            ValidateIssuerSigningKey = true, // if we leave this false , any user can send token they want 
+            //            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Token:key"])),
+            //           // ValidIssuer = Configuration["Token:Issuer"], //because  we add Issuer  when we generate that token , we want to validate that 
+            //            ValidateIssuer = false,
+            //            ValidateAudience = false // token can have Issuer and Audience, Audience means who the token was issue to 
 
-            services.AddAuthorization();
-            services.AddControllersWithViews();
+            //        };
+            //    });
+            //services.AddScoped<ITokenService,TokenService>();
+            //services.AddAuthorization();
+            services.AddIdentityServices(Configuration);
 
+            services.AddControllers();
+            services.AddApplicationServices();
             services.AddScoped<IOrderService, OrderService>();
         }
         
@@ -75,13 +90,14 @@ namespace API.IntegrationTests.Helpers
 
             var serviceScopeFactory = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>();
             using var serviceScope = serviceScopeFactory.CreateScope();
-            var dbContext = serviceScope.ServiceProvider.GetService<StoreContext>();
-            if(dbContext == null)
+            var storeContext = serviceScope.ServiceProvider.GetService<StoreContext>();
+            var identityContext = serviceScope.ServiceProvider.GetService<AppIdentityDbContext>();
+            if (storeContext == null)
             {
                 throw new NullReferenceException("Cannot get instance of dbContext");
             }
 
-            if (dbContext.Database.GetDbConnection().ConnectionString.ToLower().Contains("live.db"))
+            if (storeContext.Database.GetDbConnection().ConnectionString.ToLower().Contains("live.db"))
             {
                 throw new Exception("LIVE SETTINGS IN TESTS!");
             }
@@ -99,10 +115,10 @@ namespace API.IntegrationTests.Helpers
              //are applied.
             
            // dbContext.Database.EnsureCreated();
-            dbContext.Database.Migrate();
-
+            storeContext.Database.Migrate();
+            identityContext?.Database.Migrate();
             //ToDo seeding data 
-            dbContext.SaveChanges();
+            storeContext.SaveChanges();
         }
     }
 }

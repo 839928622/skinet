@@ -82,12 +82,12 @@ namespace API.Controllers
 
             if (user == null) return BadRequest(new APiResponse(400));
 
-            return new UserDto()
+            return Ok(new UserDto()
             {
                 DisplayName = user.DisplayName,
                 Email = user.Email,
                 Token = _tokenService.CreateToken(user)
-            };
+            });
 
 
         }

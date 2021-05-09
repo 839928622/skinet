@@ -33,7 +33,7 @@ namespace API.IntegrationTests.Helpers
             var provider = new TestClaimsProvider();
             provider.Claims.Add(new Claim(ClaimTypes.NameIdentifier, Guid.NewGuid().ToString()));
             provider.Claims.Add(new Claim(ClaimTypes.Name, "User"));
-
+            provider.Claims.Add(new Claim(ClaimTypes.Role, "Member"));
             return provider;
         }
     }

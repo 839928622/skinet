@@ -22,13 +22,13 @@ namespace API.UnitTests.ControllerTests
         private readonly Mock<SignInManager<ApplicationUser>> _signInManagerMock;
         private readonly Mock<ITokenService> _tokenServiceMock;
         private readonly Mock<IMapper> _autoMapperMock;
-        private readonly Mock<IUserStore<ApplicationUser>> _userStoreMock;
+
         public Account()
         {
             _autoMapperMock = new Mock <IMapper>();
             _tokenServiceMock = new Mock<ITokenService>();
-            _userStoreMock = new Mock<IUserStore<ApplicationUser>>();
-            _userManagerMock = new Mock<UserManager<ApplicationUser>>(_userStoreMock.Object, null, null, null, null, null, null, null, null);
+            var userStoreMock = new Mock<IUserStore<ApplicationUser>>();
+            _userManagerMock = new Mock<UserManager<ApplicationUser>>(userStoreMock.Object, null, null, null, null, null, null, null, null);
 
            // https://stackoverflow.com/questions/48189741/mocking-a-signinmanager
             _signInManagerMock = new Mock<SignInManager<ApplicationUser>>(_userManagerMock.Object, 

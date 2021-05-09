@@ -14,6 +14,8 @@ namespace Infrastructure.Data.EntitiesConfiguration
             builder.Property(s => s.OrderStatus).HasConversion(o => o.ToString(),
                 o => (OrderStatus) Enum.Parse(typeof(OrderStatus),o));
             builder.HasMany(o => o.OrderItems).WithOne().OnDelete(DeleteBehavior.Cascade);// delete order will delete its item(s)
+            // configure decimal precision and scale global ,  check https://stackoverflow.com/questions/43277154/entity-framework-core-setting-the-decimal-precision-and-scale-to-all-decimal-p
+            builder.Property(p => p.Subtotal).HasColumnType("decimal(18,4)");
         }
     }
 }
