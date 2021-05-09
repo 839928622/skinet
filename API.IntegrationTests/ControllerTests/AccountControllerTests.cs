@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Json;
 using System.Text;
 using System.Threading.Tasks;
 using API.Dtos;
+using API.Errors;
 using API.IntegrationTests.Helpers;
 using AutoMapper;
 using Core.Entities.Identity;
@@ -88,8 +90,10 @@ namespace API.IntegrationTests.ControllerTests
             // Act
             var response = await client.PostAsync("api/Account/register", content);
 
-            var res = await response.Content.ReadAsStringAsync();
-            _testOutputHelper.WriteLine(res);
+            var res = await response.Content.ReadFromJsonAsync<APiResponse>();
+            Assert.NotNull(res);
+            Assert.Equal("you have made a bad request",res.Message);
+            //_testOutputHelper.WriteLine(res);
             // Assert
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
 
