@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,17 +13,20 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Moq;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace API.IntegrationTests.ControllerTests
 {
     public class AccountControllerTests : TestBase
     {
+        private readonly ITestOutputHelper _testOutputHelper;
         private readonly Mock<SignInManager<ApplicationUser>> _signInManagerMock;
         private readonly Mock<ITokenService> _tokenServiceMock;
         private readonly Mock<IMapper> _autoMapperMock;
         /// <inheritdoc />
-        public AccountControllerTests(TestApplicationFactory<Startup, FakeStartup> factory) : base(factory)
+        public AccountControllerTests(TestApplicationFactory<Startup, FakeStartup> factory, ITestOutputHelper testOutputHelper) : base(factory)
         {
+            _testOutputHelper = testOutputHelper;
             _autoMapperMock = new Mock<IMapper>();
             _tokenServiceMock = new Mock<ITokenService>();
             var userStoreMock = new Mock<IUserStore<ApplicationUser>>();
@@ -83,6 +87,9 @@ namespace API.IntegrationTests.ControllerTests
                 "application/json");
             // Act
             var response = await client.PostAsync("api/Account/register", content);
+
+            var res = await response.Content.ReadAsStringAsync();
+            _testOutputHelper.WriteLine(res);
             // Assert
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
 
