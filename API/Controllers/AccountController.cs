@@ -20,14 +20,17 @@ namespace API.Controllers
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly ITokenService _tokenService;
         private readonly IMapper _autoMapper;
+        private readonly IIdentityService _identityService;
+
 
         public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager
-        , ITokenService tokenService, IMapper autoMapper)
+        , ITokenService tokenService, IMapper autoMapper, IIdentityService identityService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _tokenService = tokenService;
             _autoMapper = autoMapper;
+            _identityService = identityService;
         }
 
         [HttpPost("login")]

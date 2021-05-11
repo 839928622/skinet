@@ -101,13 +101,16 @@ namespace API.IntegrationTests.ControllerTests
 
         #endregion
         [Fact]
-        public async Task Get_Get_Current_User_With_Auth_Shoud_Return_OK()
+        public async Task Get_Get_Current_User_With_Auth_Should_Return_OK()
         {
             // Arrange
             var claimsProvider = TestClaimsProvider.WithUserClaims();
             var client = Factory.CreateClientWithTestAuth(claimsProvider);
 
-
+            // Act
+            var response = await client.GetAsync("api/Account");
+            // Assert
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         }
     }
 }

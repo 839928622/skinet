@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Text;
 using API.IntegrationTests.Extensions;
 using Core.Entities.Identity;
@@ -94,7 +95,7 @@ namespace API.IntegrationTests.Helpers
             var identityContext = serviceScope.ServiceProvider.GetService<AppIdentityDbContext>();
             if (storeContext == null)
             {
-                throw new NullReferenceException("Cannot get instance of dbContext");
+                throw new NullReferenceException("Cannot get instance of storeContext");
             }
 
             if (storeContext.Database.GetDbConnection().ConnectionString.ToLower().Contains("live.db"))
@@ -116,8 +117,29 @@ namespace API.IntegrationTests.Helpers
             
            // dbContext.Database.EnsureCreated();
             storeContext.Database.Migrate();
-            identityContext?.Database.Migrate();
-            //ToDo seeding data 
+            if (identityContext == null)
+            {
+                throw new NullReferenceException("Cannot get instance of identityContext");
+            }
+            identityContext.Database.Migrate();
+            //seeding data 
+            if (identityContext.Users.Any())
+            {
+                identityContext.Users.Add(new ApplicationUser()
+                {
+                    UserName = "test",
+                    Email = "testuser@mail.com",
+                    Address = new Address()
+                    {
+                        FirstName = "test FirstName",
+                        LastName = "test LastName",
+                        State = "test State",
+                        Street = "test Street",
+                        Zipcode = "test Zipcode"
+                    }
+                });
+            }
+            identityContext.SaveChanges();
             storeContext.SaveChanges();
         }
     }

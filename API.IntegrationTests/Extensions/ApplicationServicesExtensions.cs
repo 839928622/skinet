@@ -13,7 +13,7 @@ namespace API.IntegrationTests.Extensions
     {
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
-      
+            services.AddHttpContextAccessor();
             services.AddScoped<IProductRepos, ProductRepository>();
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddScoped<IOrderService, OrderService>();

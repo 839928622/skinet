@@ -16,6 +16,7 @@ namespace API.Extensions
         public static IServiceCollection AddIdentityServices(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddScoped<ITokenService, TokenService>();
+            services.AddTransient<IIdentityService, IdentityService>();
 
             var builder = services.AddIdentityCore<ApplicationUser>();
             builder = new IdentityBuilder(builder.UserType, builder.Services);

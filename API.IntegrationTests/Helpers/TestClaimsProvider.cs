@@ -34,6 +34,7 @@ namespace API.IntegrationTests.Helpers
             provider.Claims.Add(new Claim(ClaimTypes.NameIdentifier, Guid.NewGuid().ToString()));
             provider.Claims.Add(new Claim(ClaimTypes.Name, "User"));
             provider.Claims.Add(new Claim(ClaimTypes.Role, "Member"));
+            provider.Claims.Add(new Claim(ClaimTypes.Email, "testuser@mail.com"));
             return provider;
         }
     }
