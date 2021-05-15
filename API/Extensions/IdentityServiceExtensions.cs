@@ -18,7 +18,15 @@ namespace API.Extensions
             services.AddScoped<ITokenService, TokenService>();
             services.AddTransient<IIdentityService, IdentityService>();
 
-            var builder = services.AddIdentityCore<ApplicationUser>();
+            var builder = services.AddIdentityCore<ApplicationUser>(options =>
+            {
+                options.Password.RequireNonAlphanumeric = true;
+                options.Password.RequireDigit = true;
+                options.Password.RequireLowercase = true;
+                options.Password.RequireUppercase = true;
+                options.Password.RequiredLength = 6;
+                options.Password.RequiredUniqueChars = 1;
+            });
             builder = new IdentityBuilder(builder.UserType, builder.Services);
             builder.AddEntityFrameworkStores<AppIdentityDbContext>();
             builder.AddSignInManager<SignInManager<ApplicationUser>>();

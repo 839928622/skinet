@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
@@ -10,23 +11,27 @@ using API.IntegrationTests.Helpers;
 using AutoMapper;
 using Core.Entities.Identity;
 using Core.Interfaces;
+using Infrastructure.Identity;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using Xunit;
 using Xunit.Abstractions;
 
 namespace API.IntegrationTests.ControllerTests
 {
-    public class AccountControllerTests : TestBase
+    public class AccountControllerTests : TestBase, IDisposable
     {
         private readonly ITestOutputHelper _testOutputHelper;
         private readonly Mock<SignInManager<ApplicationUser>> _signInManagerMock;
         private readonly Mock<ITokenService> _tokenServiceMock;
         private readonly Mock<IMapper> _autoMapperMock;
         /// <inheritdoc />
-        public AccountControllerTests(TestApplicationFactory<Startup, FakeStartup> factory, ITestOutputHelper testOutputHelper) : base(factory)
+        public AccountControllerTests(TestApplicationFactory<Startup, FakeStartup> factory, ITestOutputHelper testOutputHelper
+            ) : base(factory)
         {
             _testOutputHelper = testOutputHelper;
             _autoMapperMock = new Mock<IMapper>();
@@ -51,11 +56,11 @@ namespace API.IntegrationTests.ControllerTests
 
             // Act
             var response = await client.GetAsync(url);
-           
+
 
             // Assert
             Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
-           
+
         }
 
         [Theory]
@@ -92,7 +97,7 @@ namespace API.IntegrationTests.ControllerTests
 
             var res = await response.Content.ReadFromJsonAsync<APiResponse>();
             Assert.NotNull(res);
-            Assert.Equal("you have made a bad request",res.Message);
+            Assert.Equal("you have made a bad request", res.Message);
             //_testOutputHelper.WriteLine(res);
             // Assert
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
@@ -104,6 +109,27 @@ namespace API.IntegrationTests.ControllerTests
         public async Task Get_Get_Current_User_With_Auth_Should_Return_OK()
         {
             // Arrange
+            var identityDbContext = Factory.Services.GetRequiredService<AppIdentityDbContext>();
+            if (!identityDbContext.Users.Any())
+            {
+                var userManager = Factory.Services.GetRequiredService<UserManager<ApplicationUser>>();
+                var user = new ApplicationUser()
+                {
+                    UserName = "test",
+                    DisplayName = "test",
+                    Email = "testuser@mail.com",
+                    Address = new Address()
+                    {
+                        FirstName = "test FirstName",
+                        LastName = "test LastName",
+                        State = "test State",
+                        Street = "test Street",
+                        Zipcode = "test Zipcode"
+                    }
+                };
+                await userManager.CreateAsync(user, "Pa$$w0rd");
+
+            }
             var claimsProvider = TestClaimsProvider.WithUserClaims();
             var client = Factory.CreateClientWithTestAuth(claimsProvider);
 
@@ -111,6 +137,17 @@ namespace API.IntegrationTests.ControllerTests
             var response = await client.GetAsync("api/Account");
             // Assert
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        }
+
+        public void Dispose()
+        {
+            var identityDbContext = Factory.Services.GetRequiredService<AppIdentityDbContext>();
+            var userManager = Factory.Services.GetRequiredService<UserManager<ApplicationUser>>();
+            var user = identityDbContext.Users.FirstOrDefault(u => u.UserName == "test");
+            if (user == null) return;
+            identityDbContext.Users.Remove(user);
+            identityDbContext.SaveChanges();
+            _testOutputHelper.WriteLine("test user removed");
         }
     }
 }

@@ -11,7 +11,8 @@ namespace Infrastructure.Data.EntitiesConfiguration
         {
             builder.HasOne(x => x.AppUser)
                 .WithOne(x => x.Address)
-                .HasForeignKey<Address>(a => a.AppUserId);
+                .HasForeignKey<Address>(a => a.AppUserId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

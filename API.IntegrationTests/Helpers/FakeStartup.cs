@@ -123,23 +123,8 @@ namespace API.IntegrationTests.Helpers
             }
             identityContext.Database.Migrate();
             //seeding data 
-            if (identityContext.Users.Any())
-            {
-                identityContext.Users.Add(new ApplicationUser()
-                {
-                    UserName = "test",
-                    Email = "testuser@mail.com",
-                    Address = new Address()
-                    {
-                        FirstName = "test FirstName",
-                        LastName = "test LastName",
-                        State = "test State",
-                        Street = "test Street",
-                        Zipcode = "test Zipcode"
-                    }
-                });
-            }
-            identityContext.SaveChanges();
+           
+            
             storeContext.SaveChanges();
         }
     }

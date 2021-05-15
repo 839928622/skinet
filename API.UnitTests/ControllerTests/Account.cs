@@ -22,11 +22,12 @@ namespace API.UnitTests.ControllerTests
         private readonly Mock<SignInManager<ApplicationUser>> _signInManagerMock;
         private readonly Mock<ITokenService> _tokenServiceMock;
         private readonly Mock<IMapper> _autoMapperMock;
-
+        private readonly Mock<IIdentityService> _identityServiceMock;
         public Account()
         {
             _autoMapperMock = new Mock <IMapper>();
             _tokenServiceMock = new Mock<ITokenService>();
+            _identityServiceMock = new Mock<IIdentityService>();
             var userStoreMock = new Mock<IUserStore<ApplicationUser>>();
             _userManagerMock = new Mock<UserManager<ApplicationUser>>(userStoreMock.Object, null, null, null, null, null, null, null, null);
 
@@ -51,7 +52,7 @@ namespace API.UnitTests.ControllerTests
             _signInManagerMock.Setup(x => x.CheckPasswordSignInAsync(It.IsAny<ApplicationUser>(), It.IsAny<string>(), false))
                 .ReturnsAsync(SignInResult.Success);
             _tokenServiceMock.Setup(x => x.CreateToken(It.IsAny<ApplicationUser>())).Returns(It.IsAny<string>());
-            var controller = new AccountController(_userManagerMock.Object,_signInManagerMock.Object,_tokenServiceMock.Object,_autoMapperMock.Object);
+            var controller = new AccountController(_userManagerMock.Object,_signInManagerMock.Object,_tokenServiceMock.Object,_autoMapperMock.Object, _identityServiceMock.Object);
             
             // Act
             var result = await controller.Login(new LoginDto()
@@ -73,7 +74,7 @@ namespace API.UnitTests.ControllerTests
             _signInManagerMock.Setup(x => x.CheckPasswordSignInAsync(It.IsAny<ApplicationUser>(), It.IsAny<string>(), false))
                 .ReturnsAsync(SignInResult.Success);
 
-            var controller = new AccountController(_userManagerMock.Object, _signInManagerMock.Object, _tokenServiceMock.Object, _autoMapperMock.Object);
+            var controller = new AccountController(_userManagerMock.Object, _signInManagerMock.Object, _tokenServiceMock.Object, _autoMapperMock.Object, _identityServiceMock.Object);
 
             // Act
             var result = await controller.Login(new LoginDto()
@@ -100,7 +101,7 @@ namespace API.UnitTests.ControllerTests
             _signInManagerMock.Setup(x => x.CheckPasswordSignInAsync(It.IsAny<ApplicationUser>(), It.IsAny<string>(), false))
                 .ReturnsAsync(SignInResult.Failed);
 
-            var controller = new AccountController(_userManagerMock.Object, _signInManagerMock.Object, _tokenServiceMock.Object, _autoMapperMock.Object);
+            var controller = new AccountController(_userManagerMock.Object, _signInManagerMock.Object, _tokenServiceMock.Object, _autoMapperMock.Object, _identityServiceMock.Object);
 
             // Act
             var result = await controller.Login(new LoginDto()
@@ -123,7 +124,7 @@ namespace API.UnitTests.ControllerTests
                 Email = "a@b.com",
             };
             _userManagerMock.Setup(x => x.FindByEmailAsync(It.IsAny<string>())).ReturnsAsync(new ApplicationUser());
-            var controller = new AccountController(_userManagerMock.Object, _signInManagerMock.Object, _tokenServiceMock.Object, _autoMapperMock.Object);
+            var controller = new AccountController(_userManagerMock.Object, _signInManagerMock.Object, _tokenServiceMock.Object, _autoMapperMock.Object, _identityServiceMock.Object);
 
             //Act
             var res = await controller.Register(fakeRegisterDto);
